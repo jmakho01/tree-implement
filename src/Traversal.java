@@ -1,5 +1,8 @@
 import java.util.Map;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Stack;
+import java.util.Queue;
 
 public class Traversal {
   public static void main(String[] args) {
@@ -25,26 +28,74 @@ public class Traversal {
     stringRoot.right.right = new TreeNode<String>("so", null, null);
     stringRoot.right.right.right = new TreeNode<String>("good", null, null);
 
+    TreeNode<Integer> megaRoot = new TreeNode<Integer>(1, null, null);
+
+    TreeNode<Integer> current = megaRoot;
+
+    for(int i = 2; i <= 50000; i++) {
+      current.right = new TreeNode<Integer> (i, null, null);
+      current = current.right;
+    }
+
+    levelOrder(root);
+
+    //preOrderIter(megaRoot);
+
+    //System.out.println("Preorder recursive");
     //preOrder(root);
+    //System.out.println("Preorder iterative");
+    //preOrderIter(root);
+
     //postOrder(root);
     //inOrder(stringRoot);
     //printGreater(root, 7);
     //System.out.println(countNodes(root));
+    //System.out.println(toMap(stringRoot));
+  }
 
-    System.out.println(toMap(stringRoot));
+  public static <T> void preOrderIter(TreeNode<T> node) {
+    Stack<TreeNode<T>> stack = new Stack<>();
+
+    stack.push(node);
+
+    while(!stack.empty()) {
+      TreeNode<T> current = stack.pop();
+
+      if(current == null) { continue; }
+
+      System.out.println(current.value);
+      stack.push(current.right);
+      stack.push(current.left);
+    }
+  }
+
+  public static <T> void levelOrder(TreeNode<T> node) {
+    Queue<TreeNode<T>> queue = new LinkedList<>();
+
+    queue.add(node);
+
+    while(!queue.isEmpty()) {
+      TreeNode<T> current = queue.poll();
+
+      if(current == null) { continue; }
+
+      System.out.println(current.value);
+      queue.add(current.left);
+      queue.add(current.right);
+    }
   }
 
   public static <T> Map<T,Integer> toMap(TreeNode<T> node) {
-      Map<T, Integer> counts = new HashMap<>();
-      toMap(node, counts);
-      return counts;
+    Map<T, Integer> counts = new HashMap<>();
+    toMap(node, counts);
+    return counts;
   }
 
   private static <T> void toMap(TreeNode<T> node, Map<T, Integer> counts) {
-      if(node == null) { return; }
-      counts.put(node.value, counts.getOrDefault(node.value, 0) + 1);
-      toMap(node.left, counts);
-      toMap(node.right, counts);
+    if(node == null) { return; }
+    counts.put(node.value, counts.getOrDefault(node.value, 0) + 1);
+    toMap(node.left, counts);
+    toMap(node.right, counts);
   }
 
   public static int countNodes(TreeNode<?> node) {
